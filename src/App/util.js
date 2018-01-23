@@ -18,7 +18,11 @@ function parseQuery() {
       };
     }).reduce(function(params, param){
       if (param.key && param.value) {
-        params[param.key] = decodeURIComponent(param.value);
+        if(key === "code") {
+          params["code"] = atob(param.value);
+        } else {
+          params[param.key] = decodeURIComponent(param.value);
+        }
       }
       return params;
     }, {});
@@ -26,7 +30,11 @@ function parseQuery() {
 
 function updateQuery(object) {
     var query = Object.keys(object).map(function(key){
-      return key + '=' + encodeURIComponent(object[key]);
+        if (key === "code") {
+          return "code=" + btoa(object[key]);
+        } else {
+          return key + '=' + encodeURIComponent(object[key]);
+        }
     }).join('&');
 
     window.location.hash = '?' + query;
